@@ -21,6 +21,12 @@ enum class FacingDirection
 	West
 };
 
+enum class SolverMode
+{
+	Solving,
+	Optimized_Path
+};
+
 // CTestMazeSolverDlg dialog
 class CTestMazeSolverDlg : public CDialogEx
 {
@@ -46,6 +52,7 @@ private:
 	ComPtr<ID2D1SolidColorBrush> m_BmpWhiteBrush;
 	ComPtr<ID2D1SolidColorBrush> m_BmpYellowBrush;
 	ComPtr<ID2D1SolidColorBrush> m_BmpGreenBrush;
+	ComPtr<ID2D1SolidColorBrush> m_BmpRedBrush;
 	int m_Map[16][16];
 	int m_ObsMap[16][16];
 	ObsMode m_PrevObsMode;
@@ -54,6 +61,7 @@ private:
 	FacingDirection m_FacingDirection;
 	CPoint m_PrevCell;
 	CPoint m_CurrCell;
+	SolverMode m_SolverMode;
 
 	void InitMap();
 	void InitMaps();

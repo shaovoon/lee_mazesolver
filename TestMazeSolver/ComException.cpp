@@ -10,7 +10,7 @@ std::string ComException::Message() const
 {
 	char buf[800];
 	memset(buf, 0, sizeof(buf));
-	sprintf_s(buf, "ComException hr:%x, Where:%s", hr, where);
+	sprintf_s(buf, "ComException hr:%x, Where:%s", hr, where.c_str());
 	std::string str = buf;
 	return str;
 }

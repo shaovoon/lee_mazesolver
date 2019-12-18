@@ -8,13 +8,14 @@
 #include "TestMazeSolverDlg.h"
 #include "afxdialogex.h"
 #include "minicsv.h"
-#include  <algorithm>
-#include  <vector>
+#include <algorithm>
+#include <vector>
 
 D2D_COLOR_F const COLOR_WHITE = { 1.0f,  1.0f,  1.0f,  1.0f };
 D2D_COLOR_F const COLOR_BLACK = { 0.0f,  0.0f,  0.0f,  1.0f };
 D2D_COLOR_F const COLOR_YELLOW = { 0.99f, 0.85f, 0.0f,  1.0f };
 D2D_COLOR_F const COLOR_GREEN = { 0.0f,  1.0f,  0.0f,  1.0f };
+D2D_COLOR_F const COLOR_RED = { 1.0f,  0.0f,  0.0f,  1.0f };
 
 const int SHIFT_LEFT = 160;
 const int OBSTACLE = 255;
@@ -87,6 +88,7 @@ BOOL CTestMazeSolverDlg::OnInitDialog()
 	m_CurrCell.y = 15;
 
 	m_ObsMode = ObsMode::Put;
+	m_SolverMode = SolverMode::Solving;
 	m_rdoObstaclePut.SetCheck(BST_CHECKED);
 	InitMaps();
 
@@ -217,6 +219,7 @@ void CTestMazeSolverDlg::CreateDCTarget(CDC* pDC)
 	CreateDeviceResources(m_BmpTarget.Get(), m_BmpWhiteBrush, COLOR_WHITE);
 	CreateDeviceResources(m_BmpTarget.Get(), m_BmpYellowBrush, COLOR_YELLOW);
 	CreateDeviceResources(m_BmpTarget.Get(), m_BmpGreenBrush, COLOR_GREEN);
+	CreateDeviceResources(m_BmpTarget.Get(), m_BmpRedBrush, COLOR_RED);
 }
 
 void CTestMazeSolverDlg::DrawMap()
@@ -257,9 +260,11 @@ void CTestMazeSolverDlg::DrawMap()
 	ell.point = Point2F(m_CurrCell.x * cell_dim + (cell_dim / 2.0f), m_CurrCell.y * cell_dim + (cell_dim / 2.0f));
 	ell.radiusX = (cell_dim / 2.0f) - 3.0f;
 	ell.radiusY = (cell_dim / 2.0f) - 3.0f;
-	m_BmpTarget->FillEllipse(ell, m_BmpGreenBrush.Get());
+	if (m_SolverMode == SolverMode::Solving)
+		m_BmpTarget->FillEllipse(ell, m_BmpGreenBrush.Get());
+	else
+		m_BmpTarget->FillEllipse(ell, m_BmpRedBrush.Get());
 }
-
 
 void CTestMazeSolverDlg::OnSize(UINT nType, int cx, int cy)
 {
@@ -270,13 +275,11 @@ void CTestMazeSolverDlg::OnSize(UINT nType, int cx, int cy)
 	Invalidate(FALSE);
 }
 
-
 void CTestMazeSolverDlg::OnRdoRemoveObs()
 {
 	if (m_ObsMode != ObsMode::Invalid)
 		m_ObsMode = ObsMode::Remove;
 }
-
 
 void CTestMazeSolverDlg::OnRdoPutObs()
 {
@@ -331,7 +334,6 @@ void CTestMazeSolverDlg::OnMouseMove(UINT nFlags, CPoint point)
 	CDialogEx::OnMouseMove(nFlags, point);
 }
 
-
 void CTestMazeSolverDlg::OnLButtonDown(UINT nFlags, CPoint point)
 {
 	CRect rectClient;
@@ -372,7 +374,6 @@ void CTestMazeSolverDlg::OnLButtonDown(UINT nFlags, CPoint point)
 
 	CDialogEx::OnLButtonDown(nFlags, point);
 }
-
 
 void CTestMazeSolverDlg::OnLButtonUp(UINT nFlags, CPoint point)
 {
@@ -492,7 +493,6 @@ void CTestMazeSolverDlg::OnBnClickedBtnLoadMaze()
 	}
 }
 
-
 void CTestMazeSolverDlg::OnBnClickedBtnSaveMaze()
 {
 	TCHAR szFilter[] = _T("Maze files (*.maze)|*.maze|All files (*.*)|*.*|");
@@ -540,6 +540,7 @@ void CTestMazeSolverDlg::OnBnClickedBtnStart()
 	m_CurrCell.y = 15;
 
 	m_PrevObsMode = m_ObsMode;
+	m_SolverMode = SolverMode::Solving;
 	m_ObsMode = ObsMode::Invalid;
 
 	InitMap();
@@ -559,7 +560,6 @@ void CTestMazeSolverDlg::OnBnClickedBtnStop()
 		KillTimer(m_nWindowTimer);
 }
 
-
 void CTestMazeSolverDlg::OnTimer(UINT_PTR nIDEvent)
 {
 	if (nIDEvent == m_nWindowTimer)
@@ -575,13 +575,33 @@ void CTestMazeSolverDlg::OnTimer(UINT_PTR nIDEvent)
 		Invalidate(FALSE);
 		if (nextCell.x == 12 && nextCell.y == 3)
 		{
-			m_btnStart.EnableWindow(TRUE);
-			m_btnStop.EnableWindow(FALSE);
-			m_btnClearAll.EnableWindow(TRUE);
-			m_ObsMode = m_PrevObsMode;
 
 			KillTimer(m_nWindowTimer);
-			MessageBox(L"Maze solved", L"Congrats", MB_OK | MB_ICONEXCLAMATION);
+			if (m_SolverMode == SolverMode::Solving)
+			{
+				MessageBox(L"Maze solved! Next is showing the optimized path!", L"Congrats", MB_OK | MB_ICONEXCLAMATION);
+				m_FacingDirection = FacingDirection::North;
+				m_Map[12][3] = 0;
+				m_PrevCell.x = 0;
+				m_PrevCell.y = 15;
+				m_CurrCell.x = 0;
+				m_CurrCell.y = 15;
+
+				m_PrevObsMode = m_ObsMode;
+				m_SolverMode = SolverMode::Optimized_Path;
+				m_ObsMode = ObsMode::Invalid;
+
+				m_nWindowTimer = SetTimer(10000, 250, NULL);
+			}
+			else
+			{
+				m_btnStart.EnableWindow(TRUE);
+				m_btnStop.EnableWindow(FALSE);
+				m_btnClearAll.EnableWindow(TRUE);
+				m_ObsMode = m_PrevObsMode;
+
+				MessageBox(L"The optimized path is completed!", L"Congrats", MB_OK | MB_ICONEXCLAMATION);
+			}
 		}
 	}
 
@@ -832,7 +852,6 @@ void CTestMazeSolverDlg::OnDestroy()
 	CDialogEx::OnDestroy();
 }
 
-
 void CTestMazeSolverDlg::OnBnClickedBtnSaveWeightage()
 {
 	TCHAR szFilter[] = _T("Weight files (*.wei)|*.wei|All files (*.*)|*.*|");
@@ -869,7 +888,6 @@ void CTestMazeSolverDlg::OnBnClickedBtnSaveWeightage()
 	}
 
 }
-
 
 void CTestMazeSolverDlg::OnBnClickedBtnClearAll()
 {
