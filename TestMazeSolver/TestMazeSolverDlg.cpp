@@ -869,12 +869,12 @@ void CTestMazeSolverDlg::OnBnClickedBtnSaveWeightage()
 
 		csv::ofstream os(ToString(file).c_str());
 		os.set_delimiter(',', "$$");
-		os.enable_surround_quote_on_str(true, '\"');
+		os.enable_surround_quote_on_str(false, '\"');
 
 		for (int y = 0; y < 16; ++y)
 		{
 			char buf[1000];
-			sprintf_s(buf, "%02X/%02X/%02X/%02X/%02X/%02X/%02X/%02X/%02X/%02X/%02X/%02X/%02X/%02X/%02X/%02X",
+			sprintf_s(buf, "%02X|%02X|%02X|%02X|%02X|%02X|%02X|%02X|%02X|%02X|%02X|%02X|%02X|%02X|%02X|%02X",
 				m_Map[0][y], m_Map[1][y], m_Map[2][y], m_Map[3][y],
 				m_Map[4][y], m_Map[5][y], m_Map[6][y], m_Map[7][y],
 				m_Map[8][y], m_Map[9][y], m_Map[10][y], m_Map[11][y],
