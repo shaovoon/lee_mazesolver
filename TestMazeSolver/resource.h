@@ -12,6 +12,8 @@
 #define IDC_BTN_STOP                    1005
 #define IDC_BUTTON5                     1006
 #define IDC_BTN_SAVE_WEIGHTAGE          1006
+#define IDC_BUTTON1                     1007
+#define IDC_BTN_CLEAR_ALL               1007
 
 // Next default values for new objects
 // 
@@ -19,7 +21,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        130
 #define _APS_NEXT_COMMAND_VALUE         32771
-#define _APS_NEXT_CONTROL_VALUE         1007
+#define _APS_NEXT_CONTROL_VALUE         1008
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

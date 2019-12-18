@@ -44,6 +44,7 @@ void CTestMazeSolverDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_RDO_PUT_OBS, m_rdoObstaclePut);
 	DDX_Control(pDX, IDC_BTN_START, m_btnStart);
 	DDX_Control(pDX, IDC_BTN_STOP, m_btnStop);
+	DDX_Control(pDX, IDC_BTN_CLEAR_ALL, m_btnClearAll);
 }
 
 BEGIN_MESSAGE_MAP(CTestMazeSolverDlg, CDialogEx)
@@ -62,6 +63,7 @@ BEGIN_MESSAGE_MAP(CTestMazeSolverDlg, CDialogEx)
 	ON_WM_TIMER()
 	ON_WM_DESTROY()
 	ON_BN_CLICKED(IDC_BTN_SAVE_WEIGHTAGE, &CTestMazeSolverDlg::OnBnClickedBtnSaveWeightage)
+	ON_BN_CLICKED(IDC_BTN_CLEAR_ALL, &CTestMazeSolverDlg::OnBnClickedBtnClearAll)
 END_MESSAGE_MAP()
 
 
@@ -86,7 +88,7 @@ BOOL CTestMazeSolverDlg::OnInitDialog()
 
 	m_ObsMode = ObsMode::Put;
 	m_rdoObstaclePut.SetCheck(BST_CHECKED);
-	InitMap();
+	InitMaps();
 
 	return TRUE;  // return TRUE  unless you set the focus to a control
 }
@@ -253,8 +255,8 @@ void CTestMazeSolverDlg::DrawMap()
 
 	D2D1_ELLIPSE ell;
 	ell.point = Point2F(m_CurrCell.x * cell_dim + (cell_dim / 2.0f), m_CurrCell.y * cell_dim + (cell_dim / 2.0f));
-	ell.radiusX = 3.0f;
-	ell.radiusY = 3.0f;
+	ell.radiusX = (cell_dim / 2.0f) - 3.0f;
+	ell.radiusY = (cell_dim / 2.0f) - 3.0f;
 	m_BmpTarget->FillEllipse(ell, m_BmpGreenBrush.Get());
 }
 
@@ -377,7 +379,7 @@ void CTestMazeSolverDlg::OnLButtonUp(UINT nFlags, CPoint point)
 	CDialogEx::OnLButtonUp(nFlags, point);
 }
 
-void CTestMazeSolverDlg::InitMap()
+void CTestMazeSolverDlg::InitMaps()
 {
 	for (int y = 0; y < 16; ++y)
 	{
@@ -391,6 +393,17 @@ void CTestMazeSolverDlg::InitMap()
 	m_ObsMap[12][3] = 0;
 }
 
+void CTestMazeSolverDlg::InitMap()
+{
+	for (int y = 0; y < 16; ++y)
+	{
+		for (int x = 0; x < 16; ++x)
+		{
+			m_Map[x][y] = NO_OBSTACLE;
+		}
+	}
+	m_Map[12][3] = 0;
+}
 
 void CTestMazeSolverDlg::InitMapWithObs()
 {
@@ -513,11 +526,11 @@ void CTestMazeSolverDlg::OnBnClickedBtnSaveMaze()
 	}
 }
 
-
 void CTestMazeSolverDlg::OnBnClickedBtnStart()
 {
 	m_btnStart.EnableWindow(FALSE);
 	m_btnStop.EnableWindow(TRUE);
+	m_btnClearAll.EnableWindow(FALSE);
 
 	m_FacingDirection = FacingDirection::North;
 	m_Map[12][3] = 0;
@@ -529,15 +542,17 @@ void CTestMazeSolverDlg::OnBnClickedBtnStart()
 	m_PrevObsMode = m_ObsMode;
 	m_ObsMode = ObsMode::Invalid;
 
+	InitMap();
+
 	m_nWindowTimer = SetTimer(10000, 250, NULL);
-
 }
-
 
 void CTestMazeSolverDlg::OnBnClickedBtnStop()
 {
 	m_btnStart.EnableWindow(TRUE);
 	m_btnStop.EnableWindow(FALSE);
+	m_btnClearAll.EnableWindow(TRUE);
+
 	m_ObsMode = m_PrevObsMode;
 
 	if(m_nWindowTimer>0)
@@ -562,6 +577,7 @@ void CTestMazeSolverDlg::OnTimer(UINT_PTR nIDEvent)
 		{
 			m_btnStart.EnableWindow(TRUE);
 			m_btnStop.EnableWindow(FALSE);
+			m_btnClearAll.EnableWindow(TRUE);
 			m_ObsMode = m_PrevObsMode;
 
 			KillTimer(m_nWindowTimer);
@@ -852,4 +868,11 @@ void CTestMazeSolverDlg::OnBnClickedBtnSaveWeightage()
 		os.close();
 	}
 
+}
+
+
+void CTestMazeSolverDlg::OnBnClickedBtnClearAll()
+{
+	InitMaps();
+	Invalidate(FALSE);
 }

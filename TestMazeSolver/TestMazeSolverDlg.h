@@ -56,6 +56,7 @@ private:
 	CPoint m_CurrCell;
 
 	void InitMap();
+	void InitMaps();
 	void InitMapWithObs();
 	void DrawObstacles();
 	int CheckObsMap(int x, int y, bool& boundary);
@@ -82,21 +83,23 @@ protected:
 	afx_msg HCURSOR OnQueryDragIcon();
 	DECLARE_MESSAGE_MAP()
 public:
-	afx_msg void OnSize(UINT nType, int cx, int cy);
 	CButton m_rdoObstacleRemove;
+	CButton m_rdoObstaclePut;
+	CButton m_btnStart;
+	CButton m_btnStop;
+	CButton m_btnClearAll;
+	afx_msg void OnSize(UINT nType, int cx, int cy);
 	afx_msg void OnRdoRemoveObs();
 	afx_msg void OnRdoPutObs();
 	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
 	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
 	afx_msg void OnLButtonUp(UINT nFlags, CPoint point);
-	CButton m_rdoObstaclePut;
 	afx_msg void OnBnClickedBtnLoadMaze();
 	afx_msg void OnBnClickedBtnSaveMaze();
 	afx_msg void OnBnClickedBtnStart();
 	afx_msg void OnBnClickedBtnStop();
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
 	afx_msg void OnDestroy();
-	CButton m_btnStart;
-	CButton m_btnStop;
 	afx_msg void OnBnClickedBtnSaveWeightage();
+	afx_msg void OnBnClickedBtnClearAll();
 };
