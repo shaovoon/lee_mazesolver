@@ -857,7 +857,7 @@ void CTestMazeSolverDlg::OnBnClickedBtnSaveWeightage()
 	TCHAR szFilter[] = _T("Weight files (*.wei)|*.wei|All files (*.*)|*.*|");
 
 	CFileDialog fdlg(
-		FALSE, CString(".maze"), NULL,
+		FALSE, CString(".wei"), NULL,
 		OFN_EXPLORER | OFN_OVERWRITEPROMPT,
 		szFilter, AfxGetMainWnd());
 
