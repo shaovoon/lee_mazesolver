@@ -1,6 +1,9 @@
 # Lee Algorithm Mazesolver
 Lee algorithm maze solver in Visual C++ MFC and Direct2D
 
+[CodeProject Article](https://www.codeproject.com/Articles/5254765/Lee-Algorithm-Mazesolver)
+
+
 ![Image of Simulator](https://github.com/shaovoon/lee_mazesolver/blob/master/screenshot.png)
 
 ## References
