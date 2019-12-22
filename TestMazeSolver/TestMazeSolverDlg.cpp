@@ -660,7 +660,7 @@ void CTestMazeSolverDlg::DetermineNextCell(int x, int y, int prevx, int prevy, C
 		}
 		else if (m_FacingDirection == FacingDirection::West && (right == left))
 		{
-			dest.x += -1;
+			dest.x += (-1);
 			dest.y += 0;
 		}
 		else if (m_FacingDirection == FacingDirection::South && (right == left))
