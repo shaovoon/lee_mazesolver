@@ -615,8 +615,13 @@ void CTestMazeSolverDlg::DetermineNextCell(int x, int y, int prevx, int prevy, C
 	int up = GetCellWeight(x, y, prevx, prevy, 0, -1);
 	int down = GetCellWeight(x, y, prevx, prevy, 0, 1);
 
+	// default behaviour when 2 side cell values are same minimum, always turn right.
+	// default behaviour when front and any side cell values are same minimum, always go forward without turning.
+
+	// finding minimum value from the 4 neighbouring cells
 	if (left <= up && left <= down && left <= right)
 	{
+		// default behaviour when left cell shared the same minimum value with another cell
 		if (m_FacingDirection == FacingDirection::North && (left == up))
 		{
 			dest.x += 0;
@@ -648,6 +653,7 @@ void CTestMazeSolverDlg::DetermineNextCell(int x, int y, int prevx, int prevy, C
 	}
 	else if (right <= up && right <= down && right <= left)
 	{
+		// default behaviour when right cell shared the same minimum value with another cell
 		if (m_FacingDirection == FacingDirection::North && (right == up))
 		{
 			dest.x += 0;
@@ -679,6 +685,7 @@ void CTestMazeSolverDlg::DetermineNextCell(int x, int y, int prevx, int prevy, C
 	}
 	else if (up <= left && up <= down && up <= right)
 	{
+		// default behaviour when up cell shared the same minimum value with another cell
 		if (m_FacingDirection == FacingDirection::West && (up == left))
 		{
 			dest.x += (-1);
@@ -710,6 +717,7 @@ void CTestMazeSolverDlg::DetermineNextCell(int x, int y, int prevx, int prevy, C
 	}
 	else if (down <= up && down <= left && down <= right)
 	{
+		// default behaviour when down cell shared the same minimum value with another cell
 		if (m_FacingDirection == FacingDirection::West && (down == left))
 		{
 			dest.x += (-1);
