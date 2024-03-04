@@ -591,6 +591,14 @@ void CTestMazeSolverDlg::OnTimer(UINT_PTR nIDEvent)
 				m_SolverMode = SolverMode::Optimized_Path;
 				m_ObsMode = ObsMode::Invalid;
 
+				for (int x = 0; x < 16; ++x)
+				{
+					for (int y = 0; y < 16; ++y)
+					{
+						m_Map[x][y] = m_ObsMap[x][y];
+					}
+				}
+
 				m_nWindowTimer = SetTimer(10000, 250, NULL);
 			}
 			else
