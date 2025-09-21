@@ -21,17 +21,15 @@ The original simulator written in Turbo C++ 20 years ago was in DOS. This time, 
 
 Choose a maximum number, `m` to represent obstacle, say `0xFF` and the default value for unoccupied cell is `m-1`. Why `0xFF`? The maximum number would depend on your cell dimensions of your maze or (grid if talking about PCB routing). An maze of 16x16 cells would be 16*16=256(`0x100`). In other words, choose a maximum value which is impossible to exceed in any circumstance. Choice of `0xFF` is due to embedded hardware limitation because the 2 dimensional array is made up of `unsigned char` due to limited RAM on the motherboard.
 
-<ol>
-	* Set current robot in the cell[0][15].
-	* Set the value of destination cell[12][3] to 0.
-	* Before travelling next cell, do the below to determine the next cell.
-	* Set `changed` variable to `false`.
-	* Initialize all empty cells to be `m-1` if they are not occupied by obstacle.
-	* Do the following for every empty cell, i.e., skip the obstacle occupied cell. Calculate the value of current cell by finding the minimum value of neighboring cells (up, down, left, right) and add one and if the new value is not equal to current value, set `changed` to `true`. Set new value as the cell value.
-	* If `changed` is `true`, repeat steps 4 to 7, else do step 8.
-	* Travel to the next neighbouring cell with the minimum value.
-	* If current cell is destination cell[12][3], stop else do from step 3 onwards.
-</ol>
+1. Set current robot in the cell[0][15].
+1. Set the value of destination cell[12][3] to 0.
+1. Before travelling next cell, do the below to determine the next cell.
+1. Set `changed` variable to `false`.
+1. Initialize all empty cells to be `m-1` if they are not occupied by obstacle.
+1. Do the following for every empty cell, i.e., skip the obstacle occupied cell. Calculate the value of current cell by finding the minimum value of neighboring cells (up, down, left, right) and add one and if the new value is not equal to current value, set `changed` to `true`. Set new value as the cell value.
+1. If `changed` is `true`, repeat steps 4 to 7, else do step 8.
+1. Travel to the next neighbouring cell with the minimum value.
+1. If current cell is destination cell[12][3], stop else do from step 3 onwards.
 
 There are some default behaviour not documented by the pseudo-code above. If front cell and left or right cell have the same minimum value, favor travelling straight instead of making a turn. If left or right cell has the same minimum value, favor making right turn. There is no right or wrong with these defaults. It depends on the maze. Robot could make a right turn leads to a dead end while left turn could lead to the destination. Whatever your choice of default behaviour, stick with them.
 
